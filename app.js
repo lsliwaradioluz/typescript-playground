@@ -20,4 +20,3 @@ p1.greet("Hi there, I am ");
 console.log(p1.currentAgeTwice);
 p1.newAge = 40;
 console.log(p1.currentAgeTwice);
-//# sourceMappingURL=app.js.map
