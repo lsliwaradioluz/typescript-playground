@@ -1,4 +1,4 @@
-// interface, implements, readonly, ? optional properties
+// interface, implements, readonly, ? (optional properties), ReadonlyArray
 
 // #interface can only be used for objects, although custom types could be used as well
 // #custom types can't be implemented by class
@@ -41,3 +41,18 @@ let user1: Greetable;
 user1 = new Person("Max");
 
 user1.greet("Hi, I am");
+
+// #ReadonlyArray (why is this even here?!)
+let a: number[] = [1, 2, 3, 4];
+let ro: ReadonlyArray<number> = a;
+
+// ro[0] = 12; => error!
+// ro.push(5); => error!
+// ro.length = 100; => error!
+// a = ro; => error!
+
+// #we can override it with type assertion though
+let a2: number[] = [1, 2, 3, 4];
+let ro2: ReadonlyArray<number> = a;
+
+a2 = ro2 as number[];

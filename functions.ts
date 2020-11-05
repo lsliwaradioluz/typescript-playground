@@ -33,3 +33,44 @@ console.log(combinedStrings);
 
 let newFunction: FunctionType;
 newFunction = combine;
+
+// # Function Overloads
+// ## Useful in cases where typescript can not pick the correct return type
+// ## based on types of provided function parameters
+
+function combineTwoValues(a: number, b: number): number;
+function combineTwoValues(a: string, b: string): string; // <= Comment this line out to see what happens
+function combineTwoValues(a: string, b: number): string;
+function combineTwoValues(a: number, b: string): string;
+function combineTwoValues(a: Combinable, b: Combinable) {
+  if (typeof a === "string" || typeof b === "string") {
+    return a.toString() + b.toString();
+  }
+  return a + b;
+}
+
+const twoValuesCombined = combineTwoValues("Max ", "Schwarz");
+twoValuesCombined.split("");
+
+// # Optional chaining
+// Useful in cases where you don't know if certain object has a certain property
+// Add ? after the property that you are not sure about 
+
+const fetchedUserData = {
+  id: "u1",
+  name: "Max",
+  job: { title: "CEO", description: "His dream job " },
+};
+
+console.log(fetchedUserData?.job?.title);
+
+// # Nullish coalescing
+
+const userInput = undefined
+
+// If userInput equals null or undefined, use the provided fallback value 
+const storedData = userInput ?? 'DEFAULT'
+
+// ?? is similar to || in vanilla JS, but it only enforces use of fallback value in case of null or undefined 
+// operator || would also enforce using fallback value while dealing with an empty string ''
+

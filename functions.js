@@ -1,5 +1,6 @@
 "use strict";
 // Union type
+var _a;
 const combine = (input1, input2, resultConversion) => {
     let result;
     if (typeof input1 === "number" && typeof input2 === "number") {
@@ -22,3 +23,26 @@ console.log(combinedStrings);
 // Function type
 let newFunction;
 newFunction = combine;
+function combineTwoValues(a, b) {
+    if (typeof a === "string" || typeof b === "string") {
+        return a.toString() + b.toString();
+    }
+    return a + b;
+}
+const twoValuesCombined = combineTwoValues("Max ", "Schwarz");
+twoValuesCombined.split("");
+// # Optional chaining
+// Useful in cases where you don't know if certain object has a certain property
+// Add ? after the property that you are not sure about 
+const fetchedUserData = {
+    id: "u1",
+    name: "Max",
+    job: { title: "CEO", description: "His dream job " },
+};
+console.log((_a = fetchedUserData === null || fetchedUserData === void 0 ? void 0 : fetchedUserData.job) === null || _a === void 0 ? void 0 : _a.title);
+// # Nullish coalescing
+const userInput = undefined;
+// If userInput equals null or undefined, use the provided fallback value 
+const storedData = userInput !== null && userInput !== void 0 ? userInput : 'DEFAULT';
+// ?? is similar to || in vanilla JS, but it only enforces use of fallback value in case of null or undefined 
+// operator || would also enforce using fallback value while dealing with an empty string ''
