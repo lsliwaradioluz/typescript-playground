@@ -1,85 +1,88 @@
 "use strict";
-// Intersections, type guards, discriminated unions, type casting, indexed types
-const admin = {
-    name: "Max",
-    privileges: ["server-management"],
-    startDate: new Date(),
+// Generics functions, Generic classes, Generic utility types
+// Generic is a type connected with some other type
+// Built in generics examples:
+// Array
+const names = ["Adam", "Eve"];
+// Promise
+const promise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve("This is done");
+    }, 2000);
+});
+promise.then((res) => {
+    const firstWord = res.split(" ")[0];
+    // console.log(firstWord);
+});
+const merge = (obj1, obj2) => Object.assign(obj1, obj2);
+const mergedObjects = merge({ name: "Łukasz" }, { surname: "Śliwa" });
+const merge2 = merge;
+// const mergedObjects2 = merge2({ name: "Łukasz"}, 30) <= this woudl yeild an error
+const mergedObjects2 = merge2({ name: "Łukasz" }, { surname: "Śliwa" });
+const countAndDescribe = (element) => {
+    let description = "Has 0 elements";
+    if (element.length) {
+        description = `Has ${element.length} element(s)`;
+    }
+    return [element, description];
 };
-// # Type guards
-// # With "typeof":
-function addNumbersOrStrings(a, b) {
-    if (typeof a === "string" || typeof b === "string") {
-        return a.toString() + b.toString();
-    }
-    else {
-        return a + b;
-    }
-}
-function printEmployeeInformation(employee) {
-    console.log("Name: " + employee.name);
-    if ("privileges" in employee) {
-        console.log("Privileges: " + employee.privileges);
-    }
-    if ("startDate" in employee) {
-        console.log("Start date: " + employee.startDate);
-    }
-}
-printEmployeeInformation(admin);
-// # With "instanceof":
-class Car {
-    drive() {
-        console.log("Driving...");
-    }
-}
-class Truck {
-    drive() {
-        console.log("Driving a truck...");
-    }
-    loadCargo(amount) {
-        console.log("Loading cargo..." + amount);
-    }
-}
-const v1 = new Car();
-const v2 = new Truck();
-function useVehicle(vehicle) {
-    vehicle.drive();
-    if (vehicle instanceof Truck) {
-        vehicle.loadCargo(20);
-    }
-}
-// ## Union Exhaustiveness checking => Checks if all three subtypes of union type have been checked in switch case
-function checkForNever(arg) {
-    throw new Error("Unexpected object: " + arg);
-}
-function moveAnimal(animal) {
-    let speed;
-    switch (animal.kind) {
-        case "bird":
-            speed = animal.flyingSpeed;
-            break;
-        case "horse":
-            speed = animal.runningSpeed;
-            break;
-        case "mouse":
-            speed = animal.walkingSpeed;
-            break;
-        default:
-            checkForNever(animal);
-    }
-    console.log("Moving at speed " + speed);
-}
-// # Type casting (Type assertion)
-// ## Add ! at the end of expression to tell TS the variable is never going to be null
-const typeCastingInput1 = document.querySelector("input");
-typeCastingInput1.value = "Hello there!";
-// ## Add as <Element> at the end of expression to tell TS what kind of element the variable will be representing
-// ## If you don't do it, the line typeCastingInput2.value = "Hello there" will not work
-// ## Adding as <Element> is enough to tell TS the variable will not be null
-// ## Hhence you don't have to add !, but it will not hurt
-const typeCastingInput2 = document.getElementById("type-casting-input");
-typeCastingInput2.value = "Hello there!";
-const errorBag = {
-    id: "eb1",
-    email: "Not a valid e-mail",
-    username: "Not a valid username",
+console.log(countAndDescribe("Hello"));
+// # Generic function using "keyof" as a Constraint
+const getObjectProperty = (obj, key) => {
+    return `The value ${key} of given object is ${obj[key]}`;
 };
+// console.log(getObjectProperty({}, "name")); <= Error!
+console.log(getObjectProperty({ name: "Łukasz" }, "name"));
+// # Generic classes
+class DataStorage {
+    constructor() {
+        this.data = [];
+    }
+    addItem(item) {
+        this.data.push(item);
+    }
+    removeItem(item) {
+        this.data.splice(this.data.indexOf(item), 1);
+    }
+    getItems() {
+        return [...this.data];
+    }
+}
+const stringStorage = new DataStorage();
+stringStorage.addItem("Me");
+stringStorage.addItem("Myself");
+stringStorage.addItem("I");
+console.log(stringStorage.getItems());
+// Partial
+function createCourseGoal(title, description, date) {
+    const newCourseGoal = {};
+    newCourseGoal.title = title;
+    newCourseGoal.description = description;
+    newCourseGoal.completeDate = date;
+    return newCourseGoal;
+}
+// Readonly
+const employees = ["Max", "Anna"];
+const nav = {
+    about: { title: "about" },
+    contact: { title: "contact" },
+    home: { title: "home" },
+};
+nav.about;
+const todo1 = {
+    title: "Clean room",
+    completed: false,
+};
+const todo2 = {
+    title: "Dirty room",
+    completed: true,
+};
+// InstanceType
+class C {
+    constructor() {
+        this.x = 0;
+        this.y = 0;
+    }
+}
+const obj1 = { name: "Max" };
+const obj2 = { name: "Max", age: 21 };

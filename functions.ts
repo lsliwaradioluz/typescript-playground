@@ -1,4 +1,6 @@
-// Union type
+// Union types, Function Types, Optional chaining, Nullish coalescing 
+
+// # Union type
 
 type Combinable = number | string;
 
@@ -29,14 +31,14 @@ console.log(combinedNumbers);
 const combinedStrings = combine("Łukasz", "Świnia", "as-string");
 console.log(combinedStrings);
 
-// Function type
+// # Function type
 
 let newFunction: FunctionType;
 newFunction = combine;
 
 // # Function Overloads
-// ## Useful in cases where typescript can not pick the correct return type
-// ## based on types of provided function parameters
+// Useful in cases where typescript can not pick the correct return type
+// based on types of provided function parameters
 
 function combineTwoValues(a: number, b: number): number;
 function combineTwoValues(a: string, b: string): string; // <= Comment this line out to see what happens
@@ -65,6 +67,8 @@ const fetchedUserData = {
 console.log(fetchedUserData?.job?.title);
 
 // # Nullish coalescing
+// Coalescing (koalescencja) - coming together to form one mass or whole.
+// "The puddles had coalesced into shallow streams"
 
 const userInput = undefined
 

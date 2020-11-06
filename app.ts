@@ -1,160 +1,219 @@
-// Intersections, type guards, discriminated unions, type casting, indexed types
+// Generics functions, Generic classes, Generic utility types
 
-// # Intersection types (closely related to interface inheritance)
+// Generic is a type connected with some other type
+// Built in generics examples:
+// Array
 
-type Admin = {
-  name: string;
-  privileges: string[];
+const names: Array<string> = ["Adam", "Eve"];
+
+// Promise
+
+const promise: Promise<string> = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve("This is done");
+  }, 2000);
+});
+
+promise.then((res) => {
+  const firstWord = res.split(" ")[0];
+  // console.log(firstWord);
+});
+
+// # Generic functions
+
+type GenericFunction = <t1, t2>(obj1: t1, obj2: t2) => t1 & t2;
+
+const merge: GenericFunction = (obj1, obj2) => Object.assign(obj1, obj2);
+const mergedObjects = merge({ name: "Łukasz" }, { surname: "Śliwa" });
+
+// # Generic functions with Constraints
+
+type GenericFunctionWithConstraints = <t1 extends object, t2 extends object>(
+  obj1: t1,
+  obj2: t2
+) => t1 & t2;
+const merge2: GenericFunctionWithConstraints = merge;
+
+// const mergedObjects2 = merge2({ name: "Łukasz"}, 30) <= this woudl yeild an error
+const mergedObjects2 = merge2({ name: "Łukasz" }, { surname: "Śliwa" });
+
+// # Another generic function with Constraints
+
+type HasLength = {
+  length: number;
 };
 
-type Employee = {
-  name: string;
-  startDate: Date;
+const countAndDescribe = <T extends HasLength>(element: T): [T, string] => {
+  let description = "Has 0 elements";
+  if (element.length) {
+    description = `Has ${element.length} element(s)`;
+  }
+  return [element, description];
 };
 
-// # In case of objects intersection creates a new type combining ALL properties of given types
-type AdminEmployee = Admin & Employee;
+console.log(countAndDescribe("Hello"));
 
-const admin: AdminEmployee = {
-  name: "Max",
-  privileges: ["server-management"],
-  startDate: new Date(),
+// # Generic function using "keyof" as a Constraint
+
+const getObjectProperty = <T extends object, U extends keyof T>(
+  obj: T,
+  key: U
+) => {
+  return `The value ${key} of given object is ${obj[key]}`;
 };
 
-// # In case of union types, intersection creates a new type including only the types the combined unions have in common
+// console.log(getObjectProperty({}, "name")); <= Error!
+console.log(getObjectProperty({ name: "Łukasz" }, "name"));
 
-type NumericString = number | string;
-type NumericBoolean = number | boolean;
+// # Generic classes
 
-type Numeric = NumericString & NumericBoolean; // number
+class DataStorage<T extends string | number | boolean> {
+  private data: T[] = [];
 
-// # Type guards
+  addItem(item: T) {
+    this.data.push(item);
+  }
 
-// # With "typeof":
-function addNumbersOrStrings(a: NumericString, b: NumericString) {
-  if (typeof a === "string" || typeof b === "string") {
-    return a.toString() + b.toString();
-  } else {
-    return a + b;
+  removeItem(item: T) {
+    this.data.splice(this.data.indexOf(item), 1);
+  }
+
+  getItems() {
+    return [...this.data];
   }
 }
 
-// # With "in" operator:
+const stringStorage = new DataStorage<string>();
+stringStorage.addItem("Me");
+stringStorage.addItem("Myself");
+stringStorage.addItem("I");
+console.log(stringStorage.getItems());
 
-type UnknownEmployee = Employee | Admin;
-
-function printEmployeeInformation(employee: UnknownEmployee) {
-  console.log("Name: " + employee.name);
-  if ("privileges" in employee) {
-    console.log("Privileges: " + employee.privileges);
-  }
-  if ("startDate" in employee) {
-    console.log("Start date: " + employee.startDate);
-  }
+// # Generic utility types:
+interface CourseGoal {
+  title: string;
+  description: string;
+  completeDate: Date;
 }
 
-printEmployeeInformation(admin);
+// Partial
 
-// # With "instanceof":
+function createCourseGoal(title: string, description: string, date: Date) {
+  const newCourseGoal: Partial<CourseGoal> = {};
+  newCourseGoal.title = title;
+  newCourseGoal.description = description;
+  newCourseGoal.completeDate = date;
 
-class Car {
-  drive() {
-    console.log("Driving...");
-  }
+  return newCourseGoal as CourseGoal;
 }
 
-class Truck {
-  drive() {
-    console.log("Driving a truck...");
-  }
-  loadCargo(amount: number) {
-    console.log("Loading cargo..." + amount);
-  }
+// Readonly
+
+const employees: Readonly<string[]> = ["Max", "Anna"];
+// employees.push("Manu"); <= err!
+
+// Record
+
+type Key = "home" | "about" | "contact";
+
+interface Value {
+  title: string;
+  // date: Date <= comment this in to see what happens
 }
 
-type Vehicle = Car | Truck;
+type Nav = Record<Key, Value>;
 
-const v1 = new Car();
-const v2 = new Truck();
-
-function useVehicle(vehicle: Vehicle) {
-  vehicle.drive();
-  if (vehicle instanceof Truck) {
-    vehicle.loadCargo(20);
-  }
-}
-
-// # Discriminated unions => we have one common property in every object that makes up our union which describes our object
-// ## Similar to type guards!
-
-// ## All three types Bird, Horse, Mouse have a commong member: kind
-
-type Bird = {
-  kind: "bird";
-  flyingSpeed: number;
+const nav: Record<Key, Value> = {
+  about: { title: "about" },
+  contact: { title: "contact" },
+  home: { title: "home" },
 };
 
-type Horse = {
-  kind: "horse";
-  runningSpeed: number;
-};
+nav.about;
 
-type Mouse = {
-  kind: "mouse";
-  walkingSpeed: number;
-};
+// Pick && Omit
 
-type BirdOrHorse = Bird | Horse | Mouse;
-
-// ## Union Exhaustiveness checking => Checks if all three subtypes of union type have been checked in switch case
-
-function checkForNever(arg: never): never {
-  throw new Error("Unexpected object: " + arg);
+interface Todo {
+  title: string;
+  description: string;
+  completed: boolean;
 }
 
-function moveAnimal(animal: BirdOrHorse) {
-  let speed;
-  switch (animal.kind) {
-    case "bird":
-      speed = animal.flyingSpeed;
-      break;
-    case "horse":
-      speed = animal.runningSpeed;
-      break;
-    case "mouse":
-      speed = animal.walkingSpeed;
-      break;
-    default:
-      checkForNever(animal);
-  }
-  console.log("Moving at speed " + speed);
-}
-
-// # Type casting (Type assertion)
-
-// ## Add ! at the end of expression to tell TS the variable is never going to be null
-const typeCastingInput1 = document.querySelector("input")!;
-typeCastingInput1.value = "Hello there!";
-
-// ## Add as <Element> at the end of expression to tell TS what kind of element the variable will be representing
-// ## If you don't do it, the line typeCastingInput2.value = "Hello there" will not work
-// ## Adding as <Element> is enough to tell TS the variable will not be null
-// ## Hhence you don't have to add !, but it will not hurt
-const typeCastingInput2 = document.getElementById(
-  "type-casting-input"
-)! as HTMLInputElement;
-typeCastingInput2.value = "Hello there!";
-
-// # Index properties (Indexable types)?
-
-interface ErrorContainer {
-  // Pre-defined properties must be of the same type as index ones (id: number won't work)
-  id: string;
-  [prop: string]: string;
-}
-
-const errorBag: ErrorContainer = {
-  id: "eb1",
-  email: "Not a valid e-mail",
-  username: "Not a valid username",
+const todo1: Pick<Todo, "title" | "completed"> = {
+  title: "Clean room",
+  completed: false,
 };
+
+const todo2: Omit<Todo, "description"> = {
+  title: "Dirty room",
+  completed: true,
+};
+
+// Exclude
+
+type StringsOrNumbers = Exclude<
+  string | number | boolean | undefined,
+  boolean | undefined
+>;
+
+// Extract
+
+type AorB = Extract<"A" | "B" | "C" | "D", "A" | "B" | "F">;
+
+// NonNullable
+
+type WithoutNull = NonNullable<string | number | null | undefined>;
+
+// Parameters
+
+type FnType = (a: string | number, b: boolean) => void;
+
+type T0 = Parameters<() => string>;
+
+type T1 = Parameters<(s: string) => void>;
+
+type T2 = Parameters<<T>(arg: T) => T>;
+
+type T3 = Parameters<FnType>;
+
+type T4 = Parameters<(a: string, b: number) => void>;
+
+type T5 = Parameters<any>;
+
+type T6 = Parameters<never>;
+
+// Constructor Parameters
+
+type T00 = ConstructorParameters<ErrorConstructor>;
+type T11 = ConstructorParameters<FunctionConstructor>;
+type T22 = ConstructorParameters<RegExpConstructor>;
+type T33 = ConstructorParameters<any>;
+
+// ReturnType
+
+type FnType2 = (a: string, b: string) => string;
+
+type Return = ReturnType<FnType2>;
+
+// InstanceType
+
+class C {
+  x = 0;
+  y = 0;
+}
+
+type T000 = InstanceType<typeof C>;
+type T111 = InstanceType<any>;
+type T222 = InstanceType<never>;
+
+// Required
+
+interface Props {
+  name?: string;
+  age?: number;
+}
+
+interface RequiredProps extends Required<Props> {}
+
+const obj1: Props = { name: "Max" };
+const obj2: RequiredProps = { name: "Max", age: 21 };

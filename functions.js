@@ -1,5 +1,5 @@
 "use strict";
-// Union type
+// Union types, Function Types, Optional chaining, Nullish coalescing 
 var _a;
 const combine = (input1, input2, resultConversion) => {
     let result;
@@ -20,7 +20,7 @@ const combinedNumbers = combine(10, 20, "as-number");
 console.log(combinedNumbers);
 const combinedStrings = combine("Łukasz", "Świnia", "as-string");
 console.log(combinedStrings);
-// Function type
+// # Function type
 let newFunction;
 newFunction = combine;
 function combineTwoValues(a, b) {
@@ -41,6 +41,8 @@ const fetchedUserData = {
 };
 console.log((_a = fetchedUserData === null || fetchedUserData === void 0 ? void 0 : fetchedUserData.job) === null || _a === void 0 ? void 0 : _a.title);
 // # Nullish coalescing
+// Coalescing (koalescencja) - coming together to form one mass or whole.
+// "The puddles had coalesced into shallow streams"
 const userInput = undefined;
 // If userInput equals null or undefined, use the provided fallback value 
 const storedData = userInput !== null && userInput !== void 0 ? userInput : 'DEFAULT';
