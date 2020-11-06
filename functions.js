@@ -1,5 +1,5 @@
 "use strict";
-// Union types, Function Types, Optional chaining, Nullish coalescing 
+// Union types, Function Types, Optional chaining, Nullish coalescing
 var _a;
 const combine = (input1, input2, resultConversion) => {
     let result;
@@ -31,9 +31,19 @@ function combineTwoValues(a, b) {
 }
 const twoValuesCombined = combineTwoValues("Max ", "Schwarz");
 twoValuesCombined.split("");
+const combineValues = (a, b) => {
+    if (typeof a === "string" || typeof b === "string") {
+        return a.toString() + b.toString();
+    }
+    else {
+        return a + b;
+    }
+};
+const combined = combineValues("Max ", "Schwarz");
+combined.split(" ");
 // # Optional chaining
 // Useful in cases where you don't know if certain object has a certain property
-// Add ? after the property that you are not sure about 
+// Add ? after the property that you are not sure about
 const fetchedUserData = {
     id: "u1",
     name: "Max",
@@ -44,7 +54,7 @@ console.log((_a = fetchedUserData === null || fetchedUserData === void 0 ? void 
 // Coalescing (koalescencja) - coming together to form one mass or whole.
 // "The puddles had coalesced into shallow streams"
 const userInput = undefined;
-// If userInput equals null or undefined, use the provided fallback value 
-const storedData = userInput !== null && userInput !== void 0 ? userInput : 'DEFAULT';
-// ?? is similar to || in vanilla JS, but it only enforces use of fallback value in case of null or undefined 
+// If userInput equals null or undefined, use the provided fallback value
+const storedData = userInput !== null && userInput !== void 0 ? userInput : "DEFAULT";
+// ?? is similar to || in vanilla JS, but it only enforces use of fallback value in case of null or undefined
 // operator || would also enforce using fallback value while dealing with an empty string ''

@@ -1,4 +1,4 @@
-// Union types, Function Types, Optional chaining, Nullish coalescing 
+// Union types, Function Types, Optional chaining, Nullish coalescing
 
 // # Union type
 
@@ -54,9 +54,29 @@ function combineTwoValues(a: Combinable, b: Combinable) {
 const twoValuesCombined = combineTwoValues("Max ", "Schwarz");
 twoValuesCombined.split("");
 
+// How to do it with arrow functions? Using type / interface!
+
+type combineValuesOverloads = {
+  (a: string, b: string): string;
+  (a: number, b: number): number;
+  (a: string, b: number): string;
+  (a: number, b: string): string;
+};
+
+const combineValues: combineValuesOverloads = (a: any, b: any) => {
+  if (typeof a === "string" || typeof b === "string") {
+    return a.toString() + b.toString();
+  } else {
+    return a + b;
+  }
+};
+
+const combined = combineValues("Max ", "Schwarz");
+combined.split(" ");
+
 // # Optional chaining
 // Useful in cases where you don't know if certain object has a certain property
-// Add ? after the property that you are not sure about 
+// Add ? after the property that you are not sure about
 
 const fetchedUserData = {
   id: "u1",
@@ -70,11 +90,10 @@ console.log(fetchedUserData?.job?.title);
 // Coalescing (koalescencja) - coming together to form one mass or whole.
 // "The puddles had coalesced into shallow streams"
 
-const userInput = undefined
+const userInput = undefined;
 
-// If userInput equals null or undefined, use the provided fallback value 
-const storedData = userInput ?? 'DEFAULT'
+// If userInput equals null or undefined, use the provided fallback value
+const storedData = userInput ?? "DEFAULT";
 
-// ?? is similar to || in vanilla JS, but it only enforces use of fallback value in case of null or undefined 
+// ?? is similar to || in vanilla JS, but it only enforces use of fallback value in case of null or undefined
 // operator || would also enforce using fallback value while dealing with an empty string ''
-
