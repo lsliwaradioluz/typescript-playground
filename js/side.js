@@ -16,7 +16,7 @@ const obj = {
     myBooleanProp: true,
 };
 for (const key in obj) {
-    const value = obj[key]; // error, ale dlaczego?? Jak go naprawić?
+    // const value = obj[key]; // error, ale dlaczego?? Jak go naprawić?
 }
 const extension = {
     numberFunction: (param) => {

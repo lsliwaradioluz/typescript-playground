@@ -24,7 +24,7 @@ for (const hobby of person.hobbies) {
   console.log(hobby);
 }
 
-declare function getValue(key: string): string {
+function getValue(key: string): string {
   return key
 };
 // OK, return value of 'getValue' is not checked

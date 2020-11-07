@@ -16,6 +16,9 @@ console.log(person.name);
 for (const hobby of person.hobbies) {
     console.log(hobby);
 }
+function getValue(key) {
+    return key;
+}
 ;
 // OK, return value of 'getValue' is not checked
 const str = getValue("myString");
